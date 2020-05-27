@@ -160,13 +160,14 @@ function cadastrarDespesa() {
 	
 }
 
-function carregaListaDespesas(){
-	let despesas = Array()
-	despesas = bd.recuperarTodosRegistros()
+function carregaListaDespesas(despesas = Array(), filtro = false){
+	
+	if(despesas.length == 0 && filtro == false)
+		despesas = bd.recuperarTodosRegistros()
 	
 	//selecionando o elemento tbody da tabela
 	let listaDespesas = document.getElementById("listaDespesas")
-	
+	listaDespesas.innerHTML = ''
 	/*
 	<tr>
     	<td>aaaa</td>
@@ -215,5 +216,6 @@ function pesquisarDespesa(){
 	let valor = document.getElementById("valor").value
 
 	let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
-	bd.pesquisar(despesa)
+	let despesas = bd.pesquisar(despesa)
+	carregaListaDespesas(despesas, true)
 }
