@@ -67,17 +67,23 @@ let bd = new Bd()
 
 function cadastrarDespesa() {
 
-	let ano = document.getElementById('ano').value
-	let mes = document.getElementById('mes').value
-	let dia = document.getElementById('dia').value
-	let tipo = document.getElementById('tipo').value
-	let descricao = document.getElementById('descricao').value
-	let valor = document.getElementById('valor').value
+	let ano = document.getElementById('ano')
+	let mes = document.getElementById('mes')
+	let dia = document.getElementById('dia')
+	let tipo = document.getElementById('tipo')
+	let descricao = document.getElementById('descricao')
+	let valor = document.getElementById('valor')
 
-	let despesa = new Despesa(ano, mes, dia, tipo, descricao, valor)
-
+	let despesa = new Despesa(
+		ano.value, 
+		mes.value, 
+		dia.value, 
+		tipo.value, 
+		descricao.value,
+		valor.value
+	)
 	if(despesa.validarDados()){
-		//bd.gravar(despesa)
+		bd.gravar(despesa)
 
 		document.getElementById('modal_titulo').innerHTML = 'Registro inserido com sucesso'
 		document.getElementById('modal_titulo_div').className = 'modal-header text-success'
@@ -87,6 +93,13 @@ function cadastrarDespesa() {
 
 		//dialog de sucesso
 		$('#modalRegistraDespesa').modal('show') 
+		
+		ano.value = ''
+		mes.value  = ''
+		dia.value = ''
+		tipo.value = ''
+		descricao.value = ''
+		valor.value = ''
 	} else {
 		document.getElementById("modal_titulo").innerHTML = 'Erro na inclusão do registro'
 		document.getElementById('modal_titulo_div').className = 'modal-header text-danger'
@@ -103,5 +116,44 @@ function cadastrarDespesa() {
 function carregaListaDespesas(){
 	let despesas = Array()
 	despesas = bd.recuperarTodosRegistros()
-	console.log(despesas)
+	
+	//selecionando o elemento tbody da tabela
+	let listaDespesas = document.getElementById("listaDespesas")
+	
+	/*
+	<tr>
+    	<td>aaaa</td>
+    	<td>bbbb</td>
+	</tr>
+	*/
+
+	//percorrer o array de despesas listando cada despesa de forma dinâmica
+	despesas.forEach(function(d){
+		
+		
+
+		//criando a linha (tr)
+		let linha = listaDespesas.insertRow()
+
+		//criar ad colunas (td)
+		linha.insertCell(0).innerHTML = `${d.dia}/${d.mes}/${d.ano}`
+
+		//ajustar tipo
+		switch(d.tipo){
+			case '1': d.tipo = 'Alimentação'
+				break
+			case '2': d.tipo = 'Educação'
+				break
+			case '3': d.tipo = 'Lazer'
+				break
+			case '4': d.tipo = 'Saúde'
+				break
+			case '5': d.tipo = 'Transporte'
+				break
+		}
+		linha.insertCell(1).innerHTML = d.tipo
+
+		linha.insertCell(2).innerHTML = d.descricao
+		linha.insertCell(3).innerHTML = d.valor
+	})
 }
